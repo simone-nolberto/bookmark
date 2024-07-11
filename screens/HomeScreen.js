@@ -41,13 +41,13 @@ export default function HomeScreen() {
         <View style={styles.container}>
             <Text>Start typing something here</Text>
             <TextInput style={styles.input} placeholder="Enter a key word" value={userInput} onChange={(event) => {
-                setState(event.target.value);
+                setState(event.target.value)
             }}></TextInput>
 
             <View style={styles.actions}>
                 <Button onPress={() => {
                     state.getBooksbyTitle(state.apiBooksUrl + userInput);
-                }} title="Research"></Button>
+                }} title="Search"></Button>
                 <StatusBar style="auto" />
 
                 <Button title="Go to Favorites" onPress={() =>
@@ -56,21 +56,13 @@ export default function HomeScreen() {
 
             </View>
 
-            <StatusBar style="auto" />
+            <ScrollView style={styles.row}>
+                {state.books.map((book, index) => (
+                    <View style={styles.col}>
 
-            {state.loading ?
-                <ScrollView style={styles.results}>
-
-                    {state.books.map((book, index) => (
                         <View style={styles.card}>
                             <Text> Title: {book.title}</Text>
-                            {/* <Text> Written by: {book.author_name}</Text> */}
-                            <Text>Written by {book.author_name.map((author, index) => (
-                                <Text> {author}, </Text>
-                            ))} </Text>
-                            <Image style={{ width: 250, height: 250 }} source={state.imageUrl + book.cover_i + "-M" + ".jpg"}>
-
-                            </Image>
+                            <Image style={{ width: 250, height: 250 }} source={state.imageUrl + book.cover_i + "-M" + ".jpg"}></Image>
 
                             <Button title="Go to Details" onPress={() =>
                                 navigation.navigate('BookDetails', { book: book, favoriteBooks: state.favoriteBooks })
@@ -78,18 +70,13 @@ export default function HomeScreen() {
                             </Button>
 
                         </View>
-                    ))}
-
-                </ScrollView> :
 
 
-                <Text>Loading results...</Text>
+                    </View>
+                ))}
 
 
-
-            }
-
-
+            </ScrollView>
 
         </View >
 
@@ -110,35 +97,38 @@ const styles = StyleSheet.create({
     },
 
     row: {
+        width: 500,
         flex: 1,
-        flexWrap: 'wrap'
-
+        flexDirection: 'row',
+        flexWrap: 'wrap',
+        alignContent: 'space-around',
     },
 
     col: {
-        flex: 1,
-        gap: 5,
+        width: 200,
+        flex: 2,
+        gap: 30,
         justifyContent: 'center',
         paddingBottom: 5,
     },
 
     card: {
+        flex: 1,
+        gap: 10,
+        justifyContent: 'center',
+        alignItems: 'center',
         width: 350,
         height: 450,
 
     },
 
     input: {
-        width: 300,
+        width: 400,
         height: 40,
-        margin: 12,
+        borderColor: "black",
         borderWidth: 1,
         padding: 10,
-    },
-
-    results: {
-        marginTop: 50,
-
+        marginVertical: 20,
     },
 
     actions: {
@@ -146,7 +136,7 @@ const styles = StyleSheet.create({
         gap: 10,
         alignItems: 'flex-start',
         flexDirection: 'row',
-
+        marginBottom: 10,
     }
 
 
