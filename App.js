@@ -1,102 +1,32 @@
-import { StatusBar } from 'expo-status-bar';
-import React from 'react';
-import axios from 'axios';
-import { StyleSheet, Text, View, TextInput, Button, Pressable } from 'react-native';
+import { NavigationContainer } from '@react-navigation/native';
+import { createNativeStackNavigator } from '@react-navigation/native-stack';
+import BookDetails from "./screens/BookDetails";
+import HomeScreen from "./screens/HomeScreen";
+import FavoriteBooks from "./screens/FavoriteBooks";
 
 
 
-const state = ({
-
-  books: [],
-  check: true,
-  apiBooksUrl: "https://openlibrary.org/search.json?q=",
-  apiAuthorUrl: "https://openlibrary.org/search.json?author=",
-
-
-  getBooksbyTitle(url) {
-    axios.get(url)
-      .then(response => {
-        console.log(url);
-        // console.log(response.data.docs);
-        this.books = response.data.docs;
-        console.log(this.books);
-      })
-  },
-
-})
-
-
-
+const Stack = createNativeStackNavigator();
 
 export default function App() {
 
-  const [userInput, setState] = React.useState('');
-
   return (
-    <View style={styles.container}>
-      <Text>Start typing something here</Text>
-      <TextInput style={styles.input} placeholder='What book are you thinking at?' value={userInput} onChange={(event) => {
-        setState(event.target.value);
-      }}></TextInput>
-      <Button onPress={() => {
-        state.getBooksbyTitle(state.apiBooksUrl + userInput);
-      }} title="Research"></Button>
-      <StatusBar style="auto" />
 
-      <View style={styles.row}>
-        {state.books.map((book, index) => (
+    <NavigationContainer>
+      <Stack.Navigator initialRouteName='Bookmark'>
 
-          <View style={styles.col} >
-            <p key={index}>{book.title}</p>
+        <Stack.Screen name='Bookmark' component={HomeScreen}></Stack.Screen>
 
-          </View>
+        <Stack.Screen name='BookDetails' component={BookDetails}></Stack.Screen>
 
-        ))}
+        <Stack.Screen name='FavoriteBooks' component={FavoriteBooks}></Stack.Screen>
 
 
-      </View>
+      </Stack.Navigator>
 
-    </View >
+    </NavigationContainer>
 
   );
 
 }
 
-
-const styles = StyleSheet.create({
-  container: {
-    marginTop: 50,
-    flex: 1,
-    gap: 3,
-    backgroundColor: '#fff',
-    alignItems: 'center',
-    justifyContent: 'center',
-  },
-
-  row: {
-    flex: 1,
-    flexWrap: 'wrap'
-
-  },
-
-  col: {
-    flex: 1,
-    gap: 5,
-    justifyContent: 'center',
-    paddingBottom: 5,
-  },
-
-  card: {
-    width: 350,
-    height: 450,
-
-  },
-
-  input: {
-    width: 500,
-    height: 40,
-    margin: 12,
-    borderWidth: 1,
-    padding: 10,
-  },
-});
