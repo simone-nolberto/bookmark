@@ -1,73 +1,95 @@
-import { StatusBar } from 'expo-status-bar';
 import React, { useState, useEffect } from 'react';
+import { StatusBar } from 'expo-status-bar';
+
 import axios from 'axios';
-import { StyleSheet, Text, View, TextInput, Button, Image, ScrollView } from 'react-native';
 import { NavigationContainer, useNavigation } from '@react-navigation/native';
+import { StyleSheet, Text, View, TextInput, Button, Image, ScrollView } from 'react-native';
+
 import { createNativeStackNavigator } from '@react-navigation/native-stack';
+
 
 const Stack = createNativeStackNavigator();
 
 const state = ({
 
-    books: [],
     favoriteBooks: [],
-    loading: true,
+    check: true,
     apiBooksUrl: "https://openlibrary.org/search.json?q=",
     imageUrl: "https://covers.openlibrary.org/b/id/",
-
-    getBooksbyTitle(url) {
-        axios.get(url)
-            .then(response => {
-
-                console.log(url);
-
-                this.books = response.data.docs;
-                console.log(this.books);
-            })
-    },
 
 })
 
 
-export default function HomeScreen() {
 
-    const navigation = useNavigation();
+export default function AlternativeHome({ navigation, route }) {
 
-    const [userInput, setState] = React.useState('');
+    const searchBook = (query) => {
+        let results = [];
+        let url = state.apiBooksUrl + query;
 
+        axios.get(url)
+            .then(response => {
+
+                console.log(url);
+                results = response.data.docs;
+
+                results.forEach(book => {
+
+                    if (book.title.includes(query)) {
+                        results = [];
+                        console.log(book.title);
+                        results.push(book);
+                    } else {
+                        results = [];
+                    }
+                });
+
+                console.log(results);
+            })
+
+
+        return results;
+    };
+
+
+    const [userInput, setUserInput] = useState("");
+    const [books, setBooks] = useState([]);
+    const handleOnChangeText = (text) => {
+        setUserInput(text);
+        const results = searchBook(text);
+        setBooks(results);
+    };
 
     return (
 
         <View style={styles.container}>
             <Text>Start typing something here</Text>
-            <TextInput style={styles.input} placeholder="Enter a key word" value={userInput} onChange={(event) => {
-                setState(event.target.value);
-            }}></TextInput>
-
-            <View style={styles.actions}>
-                <Button onPress={() => {
-                    state.getBooksbyTitle(state.apiBooksUrl + userInput);
-                }} title="Research"></Button>
-                <StatusBar style="auto" />
-
-                <Button title="Go to Favorites" onPress={() =>
-                    navigation.navigate('FavoriteBooks', { favoriteBooks: state.favoriteBooks })
-                }></Button>
-
-            </View>
+            <TextInput
+                placeholder="Enter a book name"
+                onChangeText={handleOnChangeText}
+                value={userInput}
+                style={{
+                    width: 400,
+                    height: 40,
+                    borderColor: "black",
+                    borderWidth: 1
+                }}
+            />
 
             <StatusBar style="auto" />
 
-            {state.loading ?
+            <Button title="Go to Favorites" onPress={() =>
+                navigation.navigate('FavoriteBooks', { favoriteBooks: state.favoriteBooks })
+            }></Button>
+            <StatusBar style="auto" />
+
+            {books.length > 0 && (
                 <ScrollView style={styles.results}>
 
-                    {state.books.map((book, index) => (
+                    {books.map((book, index) => (
                         <View style={styles.card}>
                             <Text> Title: {book.title}</Text>
-                            {/* <Text> Written by: {book.author_name}</Text> */}
-                            <Text>Written by {book.author_name.map((author, index) => (
-                                <Text> {author}, </Text>
-                            ))} </Text>
+                            <Text> Written by: {book.author_name}</Text>
                             <Image style={{ width: 250, height: 250 }} source={state.imageUrl + book.cover_i + "-M" + ".jpg"}>
 
                             </Image>
@@ -80,22 +102,15 @@ export default function HomeScreen() {
                         </View>
                     ))}
 
-                </ScrollView> :
-
-
-                <Text>Loading results...</Text>
-
-
-
-            }
-
+                </ScrollView>
+            )}
 
 
         </View >
 
-    );
 
-}
+    );
+};
 
 
 const styles = StyleSheet.create({
@@ -139,15 +154,7 @@ const styles = StyleSheet.create({
     results: {
         marginTop: 50,
 
-    },
-
-    actions: {
-        flex: 1,
-        gap: 10,
-        alignItems: 'flex-start',
-        flexDirection: 'row',
-
     }
-
-
 })
+
+

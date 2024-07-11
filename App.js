@@ -1,8 +1,10 @@
 import { NavigationContainer } from '@react-navigation/native';
 import { createNativeStackNavigator } from '@react-navigation/native-stack';
-import BookDetails from "./screens/BookDetails";
+import BookDetails from "./screens/BookDetailsScreen";
 import HomeScreen from "./screens/HomeScreen";
-import FavoriteBooks from "./screens/FavoriteBooks";
+import FavoriteBooks from "./screens/FavoritesScreen";
+// import AlternativeHome from "./screens/AlternativeHome";
+
 
 
 
@@ -14,6 +16,8 @@ export default function App() {
 
     <NavigationContainer>
       <Stack.Navigator initialRouteName='Bookmark'>
+
+        {/* <Stack.Screen name='AlternativeHome' component={AlternativeHome}></Stack.Screen> */}
 
         <Stack.Screen name='Bookmark' component={HomeScreen}></Stack.Screen>
 
