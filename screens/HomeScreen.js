@@ -51,7 +51,10 @@ export default function HomeScreen() {
 
     return (
 
+
+
         <View style={styles.container}>
+
             <Text>Start typing something here</Text>
             <TextInput style={styles.input} placeholder="Enter a key word" value={userInput} onChange={(event) => {
                 setState(event.target.value)
