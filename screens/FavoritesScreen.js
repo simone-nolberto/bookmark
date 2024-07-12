@@ -22,29 +22,33 @@ export default function FavoriteBooks({ navigation, route }) {
 
         <View style={styles.container}>
 
-            <Text>Here you can find all of the books you saved</Text>
+            {
+
+                route.params.favoriteBook.length > 0 ?
+                    <ScrollView>
+
+                        {route.params.favoriteBooks.map((favoriteBook, index) => (
+                            <View style={styles.card}>
+                                <Text> Title: {favoriteBook.title}</Text>
+                                <Text> Written by: {favoriteBook.author_name}</Text>
+                                <Image style={{ width: 250, height: 250 }} source={state.imageUrl + favoriteBook.cover_i + "-M" + ".jpg"}>
+
+                                </Image>
 
 
-            <ScrollView>
+                                <Button onPress={() => {
+                                    state.removeBookFromFavorites(index);
+                                }} title="Remove" ></Button>
 
-                {route.params.favoriteBooks.map((favoriteBook, index) => (
-                    <View style={styles.card}>
-                        <Text> Title: {favoriteBook.title}</Text>
-                        <Text> Written by: {favoriteBook.author_name}</Text>
-                        <Image style={{ width: 250, height: 250 }} source={state.imageUrl + favoriteBook.cover_i + "-M" + ".jpg"}>
-
-                        </Image>
+                            </View>
+                        ))}
 
 
-                        <Button onPress={() => {
-                            state.removeBookFromFavorites(index);
-                        }} title="Remove" ></Button>
+                    </ScrollView> :
 
-                    </View>
-                ))}
+                    <Text>Here you can find all of the books you saved</Text>
 
-
-            </ScrollView>
+            }
 
         </View >
 
