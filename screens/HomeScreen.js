@@ -9,20 +9,33 @@ const Stack = createNativeStackNavigator();
 
 const state = ({
 
+    userInput: '',
+    userInputWithCapitalLetter: '',
     books: [],
     favoriteBooks: [],
     loading: true,
     apiBooksUrl: "https://openlibrary.org/search.json?q=",
     imageUrl: "https://covers.openlibrary.org/b/id/",
 
-    getBooksbyTitle(url) {
+    getBooksbyTitle(url, userInput) {
+        this.books = [];
         axios.get(url)
             .then(response => {
+                this.userInput = userInput;
+                this.userInputWithCapitalLetter = userInput.charAt(0).toUpperCase() + userInput.slice(1);
+                // console.log(this.userInput, this.userInputWithCapitalLetter);
 
-                console.log(url);
 
-                this.books = response.data.docs;
-                console.log(this.books);
+                response.data.docs.forEach(book => {
+                    // console.log(book.title);
+                    if (book.title.includes(this.userInput) || book.title.includes(this.userInputWithCapitalLetter)) {
+                        this.books.push(book);
+                        console.log(this.books);
+                    } else {
+                        console.log("sorry, this book won't be shown");
+                    }
+                });
+
             })
     },
 
@@ -46,7 +59,7 @@ export default function HomeScreen() {
 
             <View style={styles.actions}>
                 <Button onPress={() => {
-                    state.getBooksbyTitle(state.apiBooksUrl + userInput);
+                    state.getBooksbyTitle(state.apiBooksUrl + userInput, userInput);
                 }} title="Search"></Button>
                 <StatusBar style="auto" />
 
@@ -56,8 +69,9 @@ export default function HomeScreen() {
 
             </View>
 
+
             <ScrollView style={styles.row}>
-                {state.books.map((book, index) => (
+                {state.books.map((book) => (
                     <View style={styles.col}>
 
                         <View style={styles.card}>
@@ -78,7 +92,9 @@ export default function HomeScreen() {
 
             </ScrollView>
 
+
         </View >
+
 
     );
 
@@ -87,7 +103,7 @@ export default function HomeScreen() {
 
 const styles = StyleSheet.create({
     container: {
-        marginTop: 50,
+        marginTop: 25,
         flex: 1,
         gap: 3,
         backgroundColor: '#fff',
@@ -99,17 +115,17 @@ const styles = StyleSheet.create({
     row: {
         width: 500,
         flex: 1,
-        flexDirection: 'row',
         flexWrap: 'wrap',
-        alignContent: 'space-around',
+        padding: 75,
+
     },
 
     col: {
         width: 200,
-        flex: 2,
+        flex: 1,
         gap: 30,
         justifyContent: 'center',
-        paddingBottom: 5,
+        marginVertical: 30,
     },
 
     card: {
@@ -133,10 +149,11 @@ const styles = StyleSheet.create({
 
     actions: {
         flex: 1,
+        height: 10,
         gap: 10,
         alignItems: 'flex-start',
         flexDirection: 'row',
-        marginBottom: 10,
+
     }
 
 
