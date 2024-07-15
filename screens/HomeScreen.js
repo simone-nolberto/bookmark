@@ -25,16 +25,19 @@ const state = ({
                 this.userInputWithCapitalLetter = userInput.charAt(0).toUpperCase() + userInput.slice(1);
                 // console.log(this.userInput, this.userInputWithCapitalLetter);
 
+                let books = [];
 
                 response.data.docs.forEach(book => {
                     // console.log(book.title);
                     if (book.title.includes(this.userInput) || book.title.includes(this.userInputWithCapitalLetter)) {
-                        this.books.push(book);
-                        console.log(this.books);
+                        books.push(book);
+                        console.log(books);
                     } else {
                         console.log("sorry, this book won't be shown");
                     }
                 });
+
+                this.books = books;
 
             })
     },
@@ -74,10 +77,11 @@ export default function HomeScreen() {
 
 
             <ScrollView style={styles.row}>
-                {state.books.map((book) => (
-                    <View style={styles.col}>
+                {state.books.map((book, index) => (
+                    <View key={index} style={styles.col}>
 
                         <View style={styles.card}>
+
                             <Text> Title: {book.title}</Text>
                             <Image style={{ width: 250, height: 250 }} source={state.imageUrl + book.cover_i + "-M" + ".jpg"}></Image>
 
